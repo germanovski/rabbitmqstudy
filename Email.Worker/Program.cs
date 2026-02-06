@@ -1,5 +1,6 @@
 ﻿using Email.Contracts;
 using Email.Worker;
+using MailKit;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -65,10 +66,18 @@ consumer.ReceivedAsync += async (sender, eventArgs) =>
     {
 
         var json = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
-        var email = JsonSerializer.Deserialize<EmailMessage>(json);
+        var envelope = JsonSerializer.Deserialize<MessageEnvelope<JsonElement>>(json);
 
-        if (email is null)
-            throw new InvalidOperationException("Objeto inválido");
+        if (envelope is null)
+            throw new InvalidOperationException("Envelope inválido");
+
+        if (envelope.MessageType != "email.send")
+            throw new InvalidOperationException("Tipo de mensagem desconhecido");
+
+        if (envelope.Version != 1)
+            throw new InvalidOperationException("Versão não suportada");
+
+        EmailMessageV1 email = envelope.Payload.Deserialize<EmailMessageV1>() ?? throw new InvalidOperationException("Payload inválido");
 
         Console.WriteLine($"✉️ Email recebido: {email.Body}");
         //throw new Exception("Falha simulada no envio de email");

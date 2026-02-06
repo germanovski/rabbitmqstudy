@@ -14,12 +14,19 @@ namespace Email.API.Messaging
             _factory = new ConnectionFactory { HostName = "localhost"};
         }
 
-        public async Task PublishAsync(EmailMessage message)
+        public async Task PublishAsync(EmailMessageV1 message)
         {
             using var connection = await _factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+            var envelope = new MessageEnvelope<EmailMessageV1>
+            {
+                MessageType = "email.send",
+                Version = 1,
+                Payload = message
+            };
+
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(envelope));
 
             var props = new BasicProperties
             {

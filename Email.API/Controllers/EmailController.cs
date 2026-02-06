@@ -19,7 +19,7 @@ public class EmailController : ControllerBase
     }
 
     [HttpPost("send")]
-    public async Task<IActionResult> SendEmail([FromBody] EmailMessage message)
+    public async Task<IActionResult> SendEmail([FromBody] EmailMessageV1 message)
     {
         if (message == null)
             return BadRequest("Mensagem inválida.");

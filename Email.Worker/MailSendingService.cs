@@ -8,7 +8,7 @@ public class MailSendingService
 {
     const int smtpPort = 1025;
 
-    public async Task SendEmailAsync(EmailMessage emailMessage)
+    public async Task SendEmailAsync(EmailMessageV1 emailMessage)
     {
         var message = new MimeMessage();
         
