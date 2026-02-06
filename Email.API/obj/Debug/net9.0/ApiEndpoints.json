@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "Email.API.Controllers.EmailController",
+    "Method": "SendEmail",
+    "RelativePath": "api/Email/send",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "message",
+        "Type": "MailWithRabbitmq.EmailMessage",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

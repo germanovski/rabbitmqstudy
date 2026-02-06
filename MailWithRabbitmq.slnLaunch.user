@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Novo Perfil",
+    "Projects": [
+      {
+        "Path": "Email.API\\Email.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Email.Worker\\Email.Worker.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
