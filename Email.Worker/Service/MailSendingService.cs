@@ -2,7 +2,7 @@
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace Email.Worker;
+namespace Email.Worker.Service;
 
 public class MailSendingService
 {
@@ -11,7 +11,7 @@ public class MailSendingService
     public async Task SendEmailAsync(EmailMessageV1 emailMessage)
     {
         var message = new MimeMessage();
-        
+
         var from = new MailboxAddress(emailMessage.From.Name, emailMessage.From.Email);
         message.From.Add(from);
 

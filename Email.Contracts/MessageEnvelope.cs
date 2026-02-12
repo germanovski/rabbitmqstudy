@@ -10,5 +10,6 @@ public class MessageEnvelope<T>
 {
     public string MessageType { get; set; } = default;
     public int Version { get;set; }
+    public DateTime OcurredAt { get; set; } = DateTime.UtcNow;
     public T Payload { get; set; } = default;
 }

@@ -1,5 +1,7 @@
 ﻿using Email.Contracts;
-using Email.Worker;
+using Email.Worker.Handler;
+using Email.Worker.Messaging;
+using Email.Worker.Service;
 using MailKit;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -17,6 +19,10 @@ var factory = new ConnectionFactory { HostName = "localhost" };
 using var connection = await factory.CreateConnectionAsync();
 using var channel = await connection.CreateChannelAsync();
 const int maxRetries = 3;
+
+var mailSendingService = new MailSendingService();
+var emailSendinHandler = new EmailSendingHandler(mailSendingService);
+var router = new ConsumerRouter(emailSendinHandler);
 
 MailSendingService service = new();
 
@@ -66,13 +72,10 @@ consumer.ReceivedAsync += async (sender, eventArgs) =>
     {
 
         var json = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
-        var envelope = JsonSerializer.Deserialize<MessageEnvelope<JsonElement>>(json);
-
-        if (envelope is null)
+        var envelope = JsonSerializer.Deserialize<MessageEnvelope<JsonElement>>(json) ??
             throw new InvalidOperationException("Envelope inválido");
 
-        if (envelope.MessageType != "email.send")
-            throw new InvalidOperationException("Tipo de mensagem desconhecido");
+        await router.RouteAsync(envelope);
 
         if (envelope.Version != 1)
             throw new InvalidOperationException("Versão não suportada");
