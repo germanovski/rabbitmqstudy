@@ -18,15 +18,12 @@ public class EmailSendingHandler
         _mailSendingService = mailSendingService;
     }
 
-    public async Task HandleAsync(MessageEnvelope<JsonElement> envelope)
+    public async Task HandleAsync(IEmailContract message)
     {
-        var email = envelope.Payload.Deserialize<EmailMessageV1>();
+        var model = EmailMapper.ToModel(message);
 
-        if (email is null)
-            throw new InvalidOperationException("Payload inválido.");
+        Console.WriteLine($"📨 Enviando email para {model.ToEmail}");
 
-        Console.WriteLine($"📨 Enviando email para {email.To}");
-
-        await _mailSendingService.SendEmailAsync(email);
+        await _mailSendingService.SendEmailAsync(model);
     }
 }

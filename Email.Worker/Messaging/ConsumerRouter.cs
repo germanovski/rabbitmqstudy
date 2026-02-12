@@ -22,8 +22,14 @@ namespace Email.Worker.Messaging
         {
             switch(envelope.MessageType) 
             {
-                case "email.send":
-                    await _emailSendingHandler.HandleAsync(envelope);
+                case "email.send.V1":
+                    var v1 = envelope.Payload.Deserialize<EmailMessageV1>();
+                    await _emailSendingHandler.HandleAsync(v1!);
+                    break;
+
+                case "email.send.V2":
+                    var v2 = envelope.Payload.Deserialize<EmailMessageV2>();
+                    await _emailSendingHandler.HandleAsync(v2!);
                     break;
 
                 default:

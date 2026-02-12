@@ -14,16 +14,23 @@ namespace Email.API.Messaging
             _factory = new ConnectionFactory { HostName = "localhost"};
         }
 
-        public async Task PublishAsync(EmailMessageV1 message)
+        public async Task PublishAsync(EmailMessageV2 message)
         {
             using var connection = await _factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
-            var envelope = new MessageEnvelope<EmailMessageV1>
+            var envelope = new MessageEnvelope<EmailMessageV2>
             {
-                MessageType = "email.send",
+                MessageType = "email.send.V2",
                 Version = 1,
-                Payload = message
+                Payload = new EmailMessageV2
+                {
+                    From = new() { Email = "math.germano@gmail.com", Name = "Germano"},
+                    To = new() { Email = "user@gmail,com", Name = "Usuário"},
+                    Body = "Teste!",
+                    IsHtml = true,
+                    Subject = "Teste"
+                }
             };
 
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(envelope));

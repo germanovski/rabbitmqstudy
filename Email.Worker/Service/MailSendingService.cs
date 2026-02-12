@@ -8,20 +8,20 @@ public class MailSendingService
 {
     const int smtpPort = 1025;
 
-    public async Task SendEmailAsync(EmailMessageV1 emailMessage)
+    public async Task SendEmailAsync(EmailModel model)
     {
         var message = new MimeMessage();
 
-        var from = new MailboxAddress(emailMessage.From.Name, emailMessage.From.Email);
+        var from = new MailboxAddress(model.FromName, model.FromEmail);
         message.From.Add(from);
 
-        var to = new MailboxAddress(emailMessage.To.Name, emailMessage.To.Email);
+        var to = new MailboxAddress(model.ToName, model.ToEmail);
         message.To.Add(to);
 
-        message.Subject = emailMessage.Subject;
+        message.Subject = model.Subject;
 
         var bb = new BodyBuilder();
-        bb.TextBody = emailMessage.Body;
+        bb.TextBody = model.Body;
 
         message.Body = bb.ToMessageBody();
 
